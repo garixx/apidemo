@@ -25,7 +25,13 @@ public class RetrieveCurrentUserTimeTest extends BaseTest {
 
         assertAll("current time response",
                 () -> asserts.hasResult("ok"),
-                () -> asserts.hasTimezone("Europe/Kyiv")
+                () -> asserts.hasTimestamp(System.currentTimeMillis()/1000, 5L),
+                () -> asserts.hasTimezone(getUserTimezone())
         );
+    }
+
+    //it's stub for report
+    private String getUserTimezone() {
+        return "Europe/Kyiv"; //TODO: provide api call to external service to get user timezone
     }
 }
