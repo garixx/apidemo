@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "8.10.2"
+}
+
+wrapper {
+    gradleVersion = '8.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = 'com.example.junit5'
+version = '1.0-SNAPSHOT'
+
+def allureVersion = '2.26.0'
+def aspectJVersion = '1.9.22'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.add('-parameters')
+}
+
+configurations {
+    agent {
+        canBeResolved = true
+        canBeConsumed = true
+    }
+}
+
+dependencies {
+    agent "org.aspectj:aspectjweaver:$aspectJVersion"
+
+    implementation platform("io.qameta.allure:allure-bom:$allureVersion")
+    implementation "io.qameta.allure:allure-junit5"
+
+    testImplementation platform("org.junit:junit-bom:5.10.2")
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.10.2'
+
+
+    testImplementation "org.slf4j:slf4j-simple:2.0.12"
+
+    implementation("org.assertj:assertj-core:3.26.3")
+    implementation "io.qameta.allure:allure-rest-assured"
+    implementation 'io.rest-assured:rest-assured:5.5.0'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
+
+}
+
+test {
+    ignoreFailures = true
+//    useJUnitPlatform()
+    useJUnitPlatform {
+        includeTags("api")
+    }
+    jvmArgs = [ "-javaagent:${configurations.agent.singleFile}" ]
+    testLogging {
+        testLogging.showStackTraces = true
+        testLogging.showStandardStreams = true
+        testLogging.events "standardOut", "started", "passed", "skipped", "failed"
+        testLogging.exceptionFormat "full"
+    }
+}
