@@ -15,7 +15,7 @@ Demonstration api tests project
 - run '**./gradlew parallel**' terminal command at project root for cincurrent execution
 
 ## Local Allure report
-- run '**allure serve build/allure-results**' terminal command
+- run '**allure serve build/allure-results**' terminal command at project root
 - open web browser by link provided
 
 ## Github Actions Allure report
