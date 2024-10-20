@@ -1,7 +1,8 @@
 # APIDEMO
 
 
-Demonstration api tests project
+Demonstration api tests project.
+Technologies used: Java, Gradle, Junit 5, Allure Reporting, Github Pages. Concurrent tests execution supported.
 
 ## Local execution prerequisites
 
