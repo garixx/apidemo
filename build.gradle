@@ -73,3 +73,21 @@ test {
         testLogging.exceptionFormat "full"
     }
 }
+
+task parallel(type: Test) {
+    ignoreFailures = true
+//    useJUnitPlatform()
+    useJUnitPlatform {
+        includeTags("api")
+    }
+    systemProperties = [
+            'junit.jupiter.execution.parallel.enabled' : 'true',
+    ]
+    jvmArgs = [ "-javaagent:${configurations.agent.singleFile}" ]
+    testLogging {
+        testLogging.showStackTraces = true
+        testLogging.showStandardStreams = true
+        testLogging.events "standardOut", "started", "passed", "skipped", "failed"
+        testLogging.exceptionFormat "full"
+    }
+}

@@ -7,19 +7,24 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import lombok.extern.slf4j.Slf4j;
 import model.megogo.dtos.ChannelsResponseDTO;
+import model.megogo.dtos.ProgramDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 @Slf4j
 @Epic("Megogo API")
 @Feature("Channel")
+@Execution(CONCURRENT)
 public class RetrieveChannelsInfoTest extends BaseTest {
     private static final int FIRST_CHANNEL = 1639111;
     private static final int SECOND_CHANNEL = 1585681;
@@ -54,11 +59,7 @@ public class RetrieveChannelsInfoTest extends BaseTest {
     @ParameterizedTest
     @ValueSource(ints = { FIRST_CHANNEL, SECOND_CHANNEL, THIRD_CHANNEL })
     void verifyProgramsSortedByStartTimestampTest(int channelId) {
-        var programs = response.getData().stream()
-                .filter(ch -> ch.getId() == channelId)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Channel not found in response"))
-                .getPrograms();
+        var programs = getProgramsForChannel(channelId);
         var programsAsserts = new ProgramsAsserts(programs);
 
         programsAsserts.isSortedByStartTimeStamp(true);
@@ -70,9 +71,10 @@ public class RetrieveChannelsInfoTest extends BaseTest {
     @ParameterizedTest
     @ValueSource(ints = { FIRST_CHANNEL, SECOND_CHANNEL, THIRD_CHANNEL })
     void verifyProgramExistForCurrentTimeTest(int channelId)  {
-        var programs = new ProgramsAsserts(response.getData().getFirst().getPrograms());
+        var programs = getProgramsForChannel(channelId);
+        var programsAsserts = new ProgramsAsserts(programs);
 
-        programs.hasProgramForTimeStamp(currentTimeStamp);
+        programsAsserts.hasProgramForTimeStamp(currentTimeStamp);
     }
 
     @Tag("api")
@@ -80,9 +82,10 @@ public class RetrieveChannelsInfoTest extends BaseTest {
     @ParameterizedTest
     @ValueSource(ints = { FIRST_CHANNEL, SECOND_CHANNEL, THIRD_CHANNEL })
     void verifyZeroPastProgramsDisplayedTest(int channelId)  {
-        var programs = new ProgramsAsserts(response.getData().getFirst().getPrograms());
+        var programs = getProgramsForChannel(channelId);
+        var programsAsserts = new ProgramsAsserts(programs);
 
-        programs.hasZeroProgramInPastForPeriod(currentTimeStamp);
+        programsAsserts.hasZeroProgramInPastForPeriod(currentTimeStamp);
     }
 
     @Tag("api")
@@ -90,8 +93,17 @@ public class RetrieveChannelsInfoTest extends BaseTest {
     @ParameterizedTest
     @ValueSource(ints = { FIRST_CHANNEL, SECOND_CHANNEL, THIRD_CHANNEL })
     void verifyProgramsReturnedOnlyForNext24HoursTest(int channelId)  {
-        var programs = new ProgramsAsserts(response.getData().getFirst().getPrograms());
+        var programs = getProgramsForChannel(channelId);
+        var programsAsserts = new ProgramsAsserts(programs);
 
-        programs.hasProgramsStartedInNext24HoursForPeriod(currentTimeStamp);
+        programsAsserts.hasProgramsStartedInNext24HoursForPeriod(currentTimeStamp);
+    }
+
+    private List<ProgramDTO> getProgramsForChannel(int channelId) {
+        return response.getData().stream()
+                .filter(ch -> ch.getId() == channelId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Channel not found in response"))
+                .getPrograms();
     }
 }
