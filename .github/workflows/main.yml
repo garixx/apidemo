@@ -21,7 +21,7 @@ jobs:
         uses: simple-elf/allure-report-action@v1.7
         if: always()
         with:
-          gh_pages: gh-pages2
+          gh_pages: gh-pages3
           allure_results: build/allure-results
 
       - name: Publish test report
@@ -29,5 +29,5 @@ jobs:
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages2
+          publish_branch: gh-pages3
           publish_dir: allure-history
