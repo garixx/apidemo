@@ -14,7 +14,7 @@ Technologies used: Java, Gradle, Junit 5, Allure Reporting, Github Pages. Concur
 ## Local execution
 - project downloaded via command '**git clone https://github.com/garixx/apidemo.git**' or any other way
 - run '**./gradlew test**' terminal command at project root for single-threaded execution
-- run '**./gradlew parallel**' terminal command at project root for cincurrent execution
+- run '**./gradlew parallel**' terminal command at project root for concurrent execution
 
 ## Local Allure report
 - run '**allure serve build/allure-results**' terminal command at project root
