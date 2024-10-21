@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"c9565b8025cbbf1d6cb64f5abe5500f4","name":"com.task.RetrieveCurrentUserTimeTest","statistic":{"failed":1,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":1}},{"uid":"627cda24d5ee18fa7b876f7133ff745f","name":"com.task.RetrieveChannelsInfoTest","statistic":{"failed":0,"broken":0,"skipped":0,"passed":13,"unknown":0,"total":13}}]}
